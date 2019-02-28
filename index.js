@@ -26,8 +26,8 @@ var SmartBanner = function (options) {
 	// - user dismissed banner
 	var unsupported = !this.appId;
 	var runningStandAlone = navigator.standalone;
-	var userDismissed = cookie.get(this.appId + '-smartbanner-closed');
-	var userInstalled = cookie.get(this.appId + '-smartbanner-installed');
+	var userDismissed = cookie.get(this.appId + '-sb-closed');
+	var userInstalled = cookie.get(this.appId + '-sb-installed');
 
 	if (unsupported || runningStandAlone || userDismissed || userInstalled) {
 		return;
@@ -43,21 +43,21 @@ SmartBanner.prototype = {
 	create: function () {
 		var sb = document.createElement('div');
 
-		sb.className = 'smartbanner smartbanner-' + this.type;
-		sb.innerHTML = '<div class="smartbanner-container">' +
-							'<a href="javascript:void(0);" class="smartbanner-close">' +
+		sb.className = 'smartbanner';
+		sb.innerHTML = '<div class="sb-container">' +
+							'<a href="javascript:void(0);" class="sb-close">' +
 								'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
 									'<path d="M8 8l8 8m0-8l-8 8" fill="none" stroke="#222521" stroke-width="1.231" stroke-linecap="round"/>' +
 								'</svg>' +
 							'</a>' +
-							'<span class="smartbanner-icon" style="background-image: url(' + this.options.icon + ')"></span>' +
-							'<div class="smartbanner-info">' +
-								'<div class="smartbanner-title">' + this.options.title + '</div>' +
+							'<span class="sb-icon" style="background-image: url(' + this.options.icon + ')"></span>' +
+							'<div class="sb-info">' +
+								'<div class="sb-title">' + this.options.title + '</div>' +
 								'<div>' + this.options.author + '</div>' +
-								'<span>' + this.options.store[this.type] + '</span>' +
+								'<div class="sb-store">' + this.options.store[this.type] + '</div>' +
 							'</div>' +
-							'<a href="' + this.link() + '" class="smartbanner-button">' +
-								'<span class="smartbanner-button-text">' + this.options.button + '</span>' +
+							'<a href="' + this.link() + '" class="sb-button">' +
+								'<span class="sb-button-text">' + this.options.button + '</span>' +
 							'</a>' +
 						'</div>';
 
@@ -70,8 +70,8 @@ SmartBanner.prototype = {
 			});
 		}
 
-		document.querySelector('.smartbanner-button').addEventListener('click', this.install.bind(this), false);
-		document.querySelector('.smartbanner-close').addEventListener('click', this.close.bind(this), false);
+		document.querySelector('.sb-button').addEventListener('click', this.install.bind(this), false);
+		document.querySelector('.sb-close').addEventListener('click', this.close.bind(this), false);
 	},
 	link: function () {
 		switch(this.type) {
@@ -82,14 +82,14 @@ SmartBanner.prototype = {
 		}
 	},
 	hide: function () {
-		root.classList.remove('smartbanner-show');
+		root.classList.remove('sb-show');
 
 		if (typeof this.options.close === 'function') {
 			return this.options.close();
 		}
 	},
 	show: function () {
-		root.classList.add('smartbanner-show');
+		root.classList.add('sb-show');
 		if (typeof this.options.show === 'function') {
 			return this.options.show();
 		}
@@ -103,7 +103,7 @@ SmartBanner.prototype = {
 		this.hide();
 	},
 	setCookie: function (action, daysToExpire) {
-		cookie.set(this.appId + '-smartbanner-' + action, 'true', {
+		cookie.set(this.appId + '-sb-' + action, 'true', {
 			path: '/',
 			expires: new Date(Number(new Date()) + (daysToExpire * 1000 * 60 * 60 * 24))
 		});
